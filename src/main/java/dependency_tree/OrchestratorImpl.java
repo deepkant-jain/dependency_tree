@@ -17,6 +17,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 public class OrchestratorImpl implements OrchestratorInterface {
     private Map<String, Server> servers = new HashMap<String, Server>();
     private DirectedGraph<Server,Server> cluster = null;
+    DirectedGraph graph = new SimpleDirectedGraph(DefaultEdge.class);
     
     public void pre_process() {
         createGraph();
@@ -36,19 +37,19 @@ public class OrchestratorImpl implements OrchestratorInterface {
         if (servers.put(server.getServerName(), server) != null){
             throw new RuntimeException("Server with name: " + server.getServerName() + " already exists \n");
         }
-        return createGraph();
+        return true;
     }
 
     private boolean createGraph() {
-        DirectedGraph graph = new SimpleDirectedGraph(DefaultEdge.class);
+        
+        //DirectedGraph graph = new SimpleDirectedGraph(DefaultEdge.class);
 
-        for (Server server: servers.values()) 
-        {
+        for (Server server: servers.values()) {
+            System.out.println("building Graph by adding"+server.getServerName()+"Tata");
             graph.addVertex(server);
         }
         
-        for (Server server: servers.values()) 
-        { 
+        for (Server server: servers.values()) { 
             if (server.getServerDependencySet() != null) 
             {
                 for (String depend: server.getServerDependencySet()) 
@@ -76,7 +77,7 @@ public class OrchestratorImpl implements OrchestratorInterface {
         if (cluster.vertexSet().size() == 0){
             System.out.println("Cluster empty, nothing to spawn\n");
         }
-        Iterator iter = new TopologicalOrderIterator(cluster);
+        Iterator iter = new TopologicalOrderIterator(graph);
         
         while(iter.hasNext()) {
             Server server = (Server) iter.next();
@@ -92,44 +93,39 @@ public class OrchestratorImpl implements OrchestratorInterface {
         }
         
         Set<String> connectedServers = new HashSet<String>(); 
-        Stack<Server> relaunchOrder = new Stack<Server>();
-        Stack<Server> stopOrder = new Stack<Server>();
-        Iterator bfi = new BreadthFirstIterator(cluster, server); 
-        while (bfi.hasNext())
-        {
-            Server ser = (Server) bfi.next();
+        Stack<Server> relaunchOrderofServers = new Stack<Server>();
+        Stack<Server> stopOrderofServers = new Stack<Server>();
+        Iterator bfiteraor = new BreadthFirstIterator(cluster, server); 
+        
+        while (bfiteraor.hasNext()){
+            Server ser = (Server) bfiteraor.next();
             connectedServers.add(ser.getServerName());
         }
         
-        if (connectedServers.size() == 1)
-        {
+        if (connectedServers.size() == 1){
             //only one server in cluster
             System.out.println("Relaunching server :  " + server.getServerName());
         }
-        else
-        {
+        else{
             // Stop server dependent on other server in reverse topological sort order and re-launch in topological sort order. 
             Iterator iter = new TopologicalOrderIterator(cluster);
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()){
                 Server ser = (Server) iter.next();
                 if (connectedServers.contains(ser.getServerName()))
                 {
-                    stopOrder.push(ser);
+                    stopOrderofServers.push(ser);
                 }
             }
             
-            while(!stopOrder.empty())
-            {
-                Server ser = stopOrder.pop();
-                relaunchOrder.push(ser);
+            while(!stopOrderofServers.empty()){
+                Server ser = stopOrderofServers.pop();
+                relaunchOrderofServers.push(ser);
                 if (ser != server){
                     System.out.println("stopping server: "+ ser.getServerName());
                 }
             }
-            while(!relaunchOrder.empty())
-            {
-                System.out.println("Relaunching : "+ relaunchOrder.pop().getServerName());
+            while(!relaunchOrderofServers.empty()){
+                System.out.println("Relaunching : "+ relaunchOrderofServers.pop().getServerName());
             }
         }
         return;
