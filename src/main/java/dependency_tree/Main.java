@@ -15,7 +15,7 @@ public class Main {
         dependenciesOfA.add("C");
         Set<String> dependenciesOfB = new HashSet<String>();
         dependenciesOfB.add("C");
-        //dependenciesOfB.add("A")//Just to check the case for cyclic dependency
+        //dependenciesOfB.add("A")//Just to check the case for cyclic dependency it should throw exception saying cyclic dependency exist.
         Set<String> dependenciesOfC = new HashSet<String>();
         Set<String> dependenciesOfE = new HashSet<String>();
         Set<String> dependenciesOfD = new HashSet<String>();
@@ -30,7 +30,7 @@ public class Main {
         Server E = new Server("E", dependenciesOfE);
         Server F = new Server("F", dependenciesOfF);
         
-        
+        //Add server only when all of its dependencies are added
         orchestrator.addServer(C);
         orchestrator.addServer(B);
         orchestrator.addServer(A);
@@ -38,9 +38,13 @@ public class Main {
         orchestrator.addServer(D);
         orchestrator.addServer(F);
         
+        //creating DAGgraph
         orchestrator.pre_process();
+        
+        //Calling API1
         orchestrator.spawn_cluster();
         
+        //Calling API2
         orchestrator.instance_down(E);   
     }
 

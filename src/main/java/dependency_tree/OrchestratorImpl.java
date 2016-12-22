@@ -41,11 +41,9 @@ public class OrchestratorImpl implements OrchestratorInterface {
     }
 
     private boolean createGraph() {
-        
-        //DirectedGraph graph = new SimpleDirectedGraph(DefaultEdge.class);
 
         for (Server server: servers.values()) {
-            System.out.println("building Graph by adding"+server.getServerName()+"Tata");
+            //System.out.println("building Graph by adding"+server.getServerName());
             graph.addVertex(server);
         }
         
