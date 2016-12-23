@@ -22,6 +22,35 @@ public class Main {
         dependenciesOfD.add("E");
         Set<String> dependenciesOfF = new HashSet<String>();
         
+        /*For testing The following forest with three trees is taken under consideration
+         * [
+                {
+                 "server": "A",
+                 "dependent_on": ["B", "C"]
+                },
+                {
+                 "server": "B",
+                 "dependent_on": ["C"]
+                },
+                {
+                  "server": "C",
+                  "dependent_on": []
+                }
+            ],
+            [
+                {
+                 "server": "D",
+                 "dependent_on": ["E"]
+                }
+            ],
+            [
+                {
+                 "server": "F",
+                 "dependent_on": []
+                }
+            ]  
+         */
+        
         //creating servers
         Server A = new Server("A", dependenciesOfA);
         Server B = new Server("B", dependenciesOfB);
@@ -42,7 +71,7 @@ public class Main {
         orchestrator.spawn_cluster();
         
         //Calling API2
-        orchestrator.instance_down(B);   
+        orchestrator.instance_down(C);   
     }
 
 }
