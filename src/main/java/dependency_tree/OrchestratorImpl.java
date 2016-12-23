@@ -19,7 +19,7 @@ public class OrchestratorImpl implements OrchestratorInterface {
     private DirectedGraph<Server,Server> cluster = null;
     DirectedGraph graph = new SimpleDirectedGraph(DefaultEdge.class);
     
-    public void pre_process() {
+    private void pre_process() {
         createGraph();
         return;
     }
@@ -71,7 +71,7 @@ public class OrchestratorImpl implements OrchestratorInterface {
 
     public void spawn_cluster() {
         // TODO Auto-generated method stub
-        
+        pre_process();
         if (cluster.vertexSet().size() == 0){
             System.out.println("Cluster empty, nothing to spawn\n");
         }

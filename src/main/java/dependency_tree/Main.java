@@ -38,14 +38,11 @@ public class Main {
         orchestrator.addServer(D);
         orchestrator.addServer(F);
         
-        //creating DAGgraph
-        orchestrator.pre_process();
-        
         //Calling API1
         orchestrator.spawn_cluster();
         
         //Calling API2
-        orchestrator.instance_down(E);   
+        orchestrator.instance_down(B);   
     }
 
 }
